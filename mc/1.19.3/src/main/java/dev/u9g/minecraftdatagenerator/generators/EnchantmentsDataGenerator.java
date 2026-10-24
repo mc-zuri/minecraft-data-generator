@@ -65,7 +65,7 @@ public class EnchantmentsDataGenerator implements IDataGenerator {
         }
         enchantmentDesc.add("exclude", excludes);
 
-        enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.target));
+        enchantmentDesc.addProperty("category", getEnchantmentTargetName(enchantment.type));
         JsonArray supportedItems = new JsonArray();
         var itemRegistry = DGU.getWorld().getRegistryManager().get(RegistryKeys.ITEM);
         for (var item : itemRegistry) {
