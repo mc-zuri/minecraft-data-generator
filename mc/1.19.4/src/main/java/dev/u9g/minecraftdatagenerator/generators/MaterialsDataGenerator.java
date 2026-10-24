@@ -9,6 +9,7 @@ import dev.u9g.minecraftdatagenerator.util.DGU;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.MiningToolItem;
@@ -74,10 +75,10 @@ public class MaterialsDataGenerator implements IDataGenerator {
         resultList.add(new MaterialInfo("leaves", blockState -> blockState.isIn(BlockTags.LEAVES)));
         resultList.add(new MaterialInfo("wool", blockState -> blockState.isIn(BlockTags.WOOL)));
 
-        // Block Materials were removed in 1.20 in favor of block tags
-        resultList.add(new MaterialInfo("gourd", blockState -> blockState.isOf(Blocks.MELON) || blockState.isOf(Blocks.PUMPKIN) || blockState.isOf(Blocks.JACK_O_LANTERN)));
-        // 'sword_efficient' tag is for all plants, and includes everything from the old PLANT and REPLACEABLE_PLANT materials (see https://minecraft.fandom.com/wiki/Tag#Blocks)
-        resultList.add(new MaterialInfo("plant", blockState -> blockState.isIn(BlockTags.SWORD_EFFICIENT)));
+        // Block Materials are removed in 1.20 in favor of block tags, but still exist here
+        resultList.add(new MaterialInfo("gourd", blockState -> blockState.getMaterial() == Material.GOURD));
+        // The 'sword_efficient' tag only exists from 1.20, so plants still come from the block materials
+        resultList.add(new MaterialInfo("plant", blockState -> blockState.getMaterial() == Material.PLANT || blockState.getMaterial() == Material.REPLACEABLE_PLANT));
 
         HashSet<String> uniqueMaterialNames = new HashSet<>();
 
