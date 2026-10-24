@@ -8,9 +8,11 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.Biome;
+import org.joml.Vector3fc;
 
 public class BiomesDataGenerator implements IDataGenerator {
     private static String guessBiomeDimensionFromCategory(Biome biome) {
@@ -93,11 +95,12 @@ public class BiomesDataGenerator implements IDataGenerator {
         biomeDesc.addProperty("dimension", dimension);
         biomeDesc.addProperty("displayName", DGU.translateText(localizationKey));
         // In 1.21.11, sky color moved to EnvironmentAttributes
-        EnvironmentAttributeMap.Entry<Integer, ?> skyColorEntry = biome.getAttributes().get(EnvironmentAttributes.SKY_COLOR);
+        // In 26.3, RGB color attributes are stored as Vector3fc instead of packed ints
+        EnvironmentAttributeMap.Entry<Vector3fc, ?> skyColorEntry = biome.getAttributes().get(EnvironmentAttributes.SKY_COLOR);
         int skyColor = 0;
-        if (skyColorEntry != null && skyColorEntry.argument() instanceof Integer) {
+        if (skyColorEntry != null && skyColorEntry.argument() instanceof Vector3fc skyColorVec) {
             // convert to RGB
-            skyColor = (Integer) skyColorEntry.argument() & 0xFFFFFF;
+            skyColor = ARGB.colorFromVector3f(skyColorVec) & 0xFFFFFF;
         }
         biomeDesc.addProperty("color", skyColor);
         //biomeDesc.addProperty("rainfall", biome.getDownfall());// - removed in 1.19.4

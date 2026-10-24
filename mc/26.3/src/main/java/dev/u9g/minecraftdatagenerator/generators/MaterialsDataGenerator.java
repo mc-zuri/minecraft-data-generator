@@ -12,6 +12,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,7 +47,7 @@ public class MaterialsDataGenerator implements IDataGenerator {
         put("golden", 12.0f);
     }};
 
-    private static Float getToolSpeed(Item item) {
+    private static Float getToolSpeed(Item item, Tool.Rule rule) {
         String itemName = item.toString().toLowerCase();
         // Remove minecraft: prefix if present
         if (itemName.startsWith("minecraft:")) {
@@ -57,7 +58,8 @@ public class MaterialsDataGenerator implements IDataGenerator {
                 return entry.getValue();
             }
         }
-        return 1.0f;
+        // Tools without a tier (shears) carry their speed on the rule itself, e.g. 5.0 for shears_major_breaking_speed
+        return rule.speed().orElse(1.0f);
     }
 
     private static String makeMaterialNameForTag(TagKey<Block> tag) {
@@ -168,14 +170,13 @@ public class MaterialsDataGenerator implements IDataGenerator {
             //Tools are handled rather easily and do not require anything else
             if (item.components().get(DataComponents.TOOL) != null) {
                 item.components().get(DataComponents.TOOL).rules()
-                        .stream().map(rule -> rule.blocks())
-                        .forEach(blocks -> {
-                                    Optional<TagKey<Block>> tagKey = blocks.unwrapKey();
+                        .forEach(rule -> {
+                                    Optional<TagKey<Block>> tagKey = rule.blocks().unwrapKey();
                                     if (tagKey.isPresent()) {
                                         String materialName = makeMaterialNameForTag(tagKey.get());
 
                                         Map<Item, Float> materialSpeeds = materialMiningSpeeds.computeIfAbsent(materialName, k -> new LinkedHashMap<>());
-                                        float baseSpeed = getToolSpeed(item);
+                                        float baseSpeed = getToolSpeed(item, rule);
                                         materialSpeeds.put(item, baseSpeed);
                                     }
                                 }

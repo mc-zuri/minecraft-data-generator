@@ -14,7 +14,7 @@ import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.RedstoneWireBlock;
 
 import java.util.*;
 
@@ -37,9 +37,9 @@ public class TintsDataGenerator implements IDataGenerator {
     public static Map<Integer, Integer> generateRedstoneTintColors() {
         Map<Integer, Integer> resultColors = new LinkedHashMap<>();
 
-        for (int redstoneLevel : RedStoneWireBlock.POWER.getPossibleValues()) {
+        for (int redstoneLevel : RedstoneWireBlock.POWER.getPossibleValues()) {
             // Remove the unintended alpha channel from the redstone tint color
-            int color = removeAlphaChannel(RedStoneWireBlock.getColorForPower(redstoneLevel));
+            int color = removeAlphaChannel(RedstoneWireBlock.getColorForPower(redstoneLevel));
             resultColors.put(redstoneLevel, color);
         }
         return resultColors;
